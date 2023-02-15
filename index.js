@@ -1,36 +1,34 @@
+// @ts-nocheck
 const express = require('express');
 const app = express();
 const telegramBot = require('node-telegram-bot-api');
 const https = require('https');
 const port = 8000;
-const Token = '6109520450:AAGVt10K15-V4wkrHJEY8UZ6Ar3aK-eDAc0';
-const Schedule = require('node-schedule');
+const Token = '5924328793:AAEA-3weujA5O30Z6up-eo2zhosDP_xH43s';
+const options = {
+	method: 'GET',
+	headers: {
+		'X-RapidAPI-Key': '08c7795a32mshe3a9c4179b4f08dp1fcf29jsnd641d1111616',
+		'X-RapidAPI-Host': 'weather-by-api-ninjas.p.rapidapi.com'
+	}
+};
 const bot = new telegramBot(Token,{polling : true});
-// Schedule.scheduleJob('1 * * * * *', function(message){
-     
-//     https.get(`https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=2c50165aec2425ae6da888502793b52a&units=metric`,(response)=>{
-//     response.on('data',(data)=>{
-//         const weather = JSON.parse(data);
-//         bot.sendMessage(message.from.id,`The temperature of your area is ${weather.main.temp}  and it feels like ${weather.main.feels_like}`);
-//     })
-//  })
-// });
 
 bot.on('message', (message)=>{
     const val = message.text;
-        https.get(`https://api.openweathermap.org/data/2.5/weather?q=${val}&appid=2c50165aec2425ae6da888502793b52a&units=metric`,(response)=>{
+        https.get(`https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=${val}`, options,(response)=>{
         response.on('data',(data)=>{
             const weather = JSON.parse(data);
-            bot.sendMessage(message.from.id,`The temperature of your area is ${weather.main.temp}  and it feels like ${weather.main.feels_like}`);
-            
+            bot.sendMessage(message.from.id,`The temperature of ${val} is ${weather.temp} degree`);
+            console.log(weather["temp"]);
         })
      })
-
-     https.get(`https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=2c50165aec2425ae6da888502793b52a&units=metric`,(response)=>{
+     https.get(`https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=${val}`, options
+     ,(response)=>{
         response.on('data',(data)=>{
             const weather = JSON.parse(data);
             setInterval(function(){
-                bot.sendMessage(message.from.id,`The temperature of your area is ${weather.main.temp}  and it feels like ${weather.main.feels_like}`);
+                bot.sendMessage(message.from.id,`The temperature of  ${val} is ${weather.temp} degree celcius.`)
             },3600000);
         })
      })
